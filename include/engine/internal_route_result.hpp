@@ -107,7 +107,7 @@ inline InternalRouteResult CollapseInternalRouteResult(const InternalRouteResult
                                                        const std::vector<bool> &is_waypoint)
 {
     BOOST_ASSERT(leggy_result.is_valid());
-    BOOST_ASSERT(is_waypoint[0]); // first and last coords
+    BOOST_ASSERT(is_waypoint[0]);     // first and last coords
     BOOST_ASSERT(is_waypoint.back()); // should always be waypoints
     // Nothing to collapse! return result as is
     if (leggy_result.unpacked_path_segments.size() == 1)

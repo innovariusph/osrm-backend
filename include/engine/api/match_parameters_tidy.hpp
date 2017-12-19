@@ -190,14 +190,15 @@ inline Result tidy(const MatchParameters &params, Thresholds cfg = {15., 5})
             const auto last_idx = result.parameters.coordinates.size() - 1;
             if (result.was_waypoint[i] && (result.parameters.waypoints.back() != last_idx))
             {
-                    result.parameters.waypoints.push_back(last_idx);
-                    //result.was_waypoint[i] = false;
+                result.parameters.waypoints.push_back(last_idx);
+                // result.was_waypoint[i] = false;
             }
         }
     }
-    // todo: this is not always true... e.g. if the first or last coordinate is duplicated and then tidied away
+    // todo: this is not always true... e.g. if the first or last coordinate is duplicated and then
+    // tidied away
     // but we do want some kind of check like this
-    //BOOST_ASSERT(result.parameters.waypoints.size() == params.waypoints.size());
+    // BOOST_ASSERT(result.parameters.waypoints.size() == params.waypoints.size());
     BOOST_ASSERT(result.tidied_to_original.size() == result.parameters.coordinates.size());
 
     return result;
