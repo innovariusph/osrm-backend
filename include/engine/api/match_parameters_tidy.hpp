@@ -191,7 +191,6 @@ inline Result tidy(const MatchParameters &params, Thresholds cfg = {15., 5})
             if (result.was_waypoint[i] && (result.parameters.waypoints.back() != last_idx))
             {
                 result.parameters.waypoints.push_back(last_idx);
-                // result.was_waypoint[i] = false;
             }
         }
     }

@@ -7,12 +7,12 @@
 
 #include "engine/phantom_node.hpp"
 
-#include "osrm/coordinate.hpp"
-
+#include "util/coordinate.hpp"
 #include "util/guidance/entry_class.hpp"
 #include "util/guidance/turn_bearing.hpp"
 #include "util/guidance/turn_lanes.hpp"
 #include "util/typedefs.hpp"
+#include "util/integer_range.hpp"
 
 #include <vector>
 
@@ -117,7 +117,7 @@ inline InternalRouteResult CollapseInternalRouteResult(const InternalRouteResult
 
     InternalRouteResult collapsed;
     collapsed.shortest_path_weight = leggy_result.shortest_path_weight;
-    for (std::size_t i = 0; i < leggy_result.unpacked_path_segments.size(); i++)
+    for (auto i : util::irange<std::size_t>(0, leggy_result.unpacked_path_segments.size()))
     {
         if (is_waypoint[i])
         {
@@ -134,12 +134,14 @@ inline InternalRouteResult CollapseInternalRouteResult(const InternalRouteResult
         else
         // no new leg, collapse the next segment into the last leg
         {
+            BOOST_ASSERT(!collapsed.unpacked_path_segments.empty());
             auto &last_segment = collapsed.unpacked_path_segments.back();
             // deduplicate last segment (needs to be checked for empty for the same node query edge
             // case)
             if (!last_segment.empty())
                 last_segment.pop_back();
             // update target phantom node of leg
+            BOOST_ASSERT(!collapsed.segment_end_coordinates.empty());
             collapsed.segment_end_coordinates.back().target_phantom =
                 leggy_result.segment_end_coordinates[i].target_phantom;
             // copy path segments into current leg

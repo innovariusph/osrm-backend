@@ -71,6 +71,15 @@ struct MatchParameters : public RouteParameters
     MatchParameters(std::vector<unsigned> timestamps_,
                     GapsType gaps_,
                     bool tidy_,
+                    Args... args_)
+        : MatchParameters(std::move(timestamps_), gaps_, tidy_, {}, std::forward<Args>(args_)...)
+    {
+    }
+
+    template <typename... Args>
+    MatchParameters(std::vector<unsigned> timestamps_,
+                    GapsType gaps_,
+                    bool tidy_,
                     std::vector<std::size_t> waypoints_,
                     Args... args_)
         : RouteParameters{std::forward<Args>(args_)...}, timestamps{std::move(timestamps_)},
@@ -85,12 +94,12 @@ struct MatchParameters : public RouteParameters
 
     bool IsValid() const
     {
-        auto invalid_idx = std::find_if(waypoints.begin(), waypoints.end(), [this](const auto &w) {
-            return w >= coordinates.size();
+        const auto valid_waypoints = std::all_of(waypoints.begin(), waypoints.end(), [this](const auto &w) {
+            return w < coordinates.size();
         });
         return RouteParameters::IsValid() &&
                (timestamps.empty() || timestamps.size() == coordinates.size()) &&
-               invalid_idx == waypoints.end();
+               valid_waypoints;
     }
 };
 }
