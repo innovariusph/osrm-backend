@@ -194,11 +194,6 @@ inline Result tidy(const MatchParameters &params, Thresholds cfg = {15., 5})
             }
         }
     }
-    // todo: this is not always true... e.g. if the first or last coordinate is duplicated and then
-    // tidied away
-    // but we do want some kind of check like this
-    // BOOST_ASSERT(result.parameters.waypoints.size() == params.waypoints.size());
-    BOOST_ASSERT(result.tidied_to_original.size() == result.parameters.coordinates.size());
 
     return result;
 }

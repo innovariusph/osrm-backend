@@ -246,17 +246,19 @@ Status MatchPlugin::HandleRequest(const RoutingAlgorithmsInterface &algorithms,
     }
 
     // Error: Check if user-supplied waypoints can be found in the resulting matches
-    for (const auto waypoint : tidied.parameters.waypoints)
     {
-        bool found = false;
+        std::set<std::size_t> tidied_waypoints(tidied.parameters.waypoints.begin(),
+                                               tidied.parameters.waypoints.end());
         std::for_each(sub_matchings.begin(), sub_matchings.end(), [&](const SubMatching &sm) {
-            auto index = std::find(sm.indices.begin(), sm.indices.end(), waypoint);
-            if (index != sm.indices.end())
-                found = true;
+            std::for_each(sm.indices.begin(),
+                          sm.indices.end(),
+                          [&tidied_waypoints](const auto index) { tidied_waypoints.erase(index); });
         });
-        if (!found)
+        if (!tidied_waypoints.empty())
+        {
             return Error(
                 "NoMatch", "Requested waypoint parameter could not be matched.", json_result);
+        }
     }
 
     // each sub_route will correspond to a MatchObject
@@ -285,13 +287,19 @@ Status MatchPlugin::HandleRequest(const RoutingAlgorithmsInterface &algorithms,
         if (!tidied.parameters.waypoints.empty())
         {
             std::vector<bool> waypoint_legs;
-            waypoint_legs.reserve(sub_matchings[index].nodes.size());
-            for (unsigned i = 0; i < sub_matchings[index].nodes.size(); ++i)
+            waypoint_legs.reserve(sub_matchings[index].indices.size());
+            for (unsigned i = 0, j = 0; i < sub_matchings[index].indices.size(); ++i)
             {
-                auto is_waypoint = std::find(tidied.parameters.waypoints.begin(),
-                                             tidied.parameters.waypoints.end(),
-                                             sub_matchings[index].indices[i]);
-                waypoint_legs.push_back(is_waypoint != tidied.parameters.waypoints.end());
+                auto current_wp = tidied.parameters.waypoints[j];
+                if (current_wp == sub_matchings[index].indices[i])
+                {
+                    waypoint_legs.push_back(true);
+                    ++j;
+                }
+                else
+                {
+                    waypoint_legs.push_back(false);
+                }
             }
             sub_routes[index] = CollapseInternalRouteResult(sub_routes[index], waypoint_legs);
         }

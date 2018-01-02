@@ -530,19 +530,6 @@ BOOST_AUTO_TEST_CASE(valid_table_urls)
     CHECK_EQUAL_RANGE(reference_1.coordinates, result_3->coordinates);
 }
 
-BOOST_AUTO_TEST_CASE(invalid_match_urls)
-{
-    // TODO more invalid_match_urls
-    std::vector<util::Coordinate> coords_1 = {{util::FloatLongitude{1}, util::FloatLatitude{2}},
-                                              {util::FloatLongitude{3}, util::FloatLatitude{4}}};
-
-    MatchParameters reference_1{};
-    reference_1.coordinates = coords_1;
-    BOOST_CHECK_EQUAL(testInvalidOptions<MatchParameters>("1,2;3,4?waypoints=0,4"), 19UL);
-    BOOST_CHECK_EQUAL(testInvalidOptions<MatchParameters>("1,2;3,4?waypoints=x;4"), 18UL);
-    BOOST_CHECK_EQUAL(testInvalidOptions<MatchParameters>("1,2;3,4?waypoints=0;3.5"), 21UL);
-}
-
 BOOST_AUTO_TEST_CASE(valid_match_urls)
 {
     std::vector<util::Coordinate> coords_1 = {{util::FloatLongitude{1}, util::FloatLatitude{2}},
@@ -600,6 +587,15 @@ BOOST_AUTO_TEST_CASE(invalid_match_urls)
     BOOST_CHECK(reference_1.radiuses != result_1->radiuses);
     CHECK_EQUAL_RANGE(reference_1.approaches, result_1->approaches);
     CHECK_EQUAL_RANGE(reference_1.coordinates, result_1->coordinates);
+
+    std::vector<util::Coordinate> coords_2 = {{util::FloatLongitude{1}, util::FloatLatitude{2}},
+                                              {util::FloatLongitude{3}, util::FloatLatitude{4}}};
+
+    MatchParameters reference_2{};
+    reference_2.coordinates = coords_2;
+    BOOST_CHECK_EQUAL(testInvalidOptions<MatchParameters>("1,2;3,4?waypoints=0,4"), 19UL);
+    BOOST_CHECK_EQUAL(testInvalidOptions<MatchParameters>("1,2;3,4?waypoints=x;4"), 18UL);
+    BOOST_CHECK_EQUAL(testInvalidOptions<MatchParameters>("1,2;3,4?waypoints=0;3.5"), 21UL);
 }
 
 BOOST_AUTO_TEST_CASE(valid_nearest_urls)
