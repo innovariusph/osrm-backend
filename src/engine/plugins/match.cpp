@@ -17,9 +17,9 @@
 #include <functional>
 #include <iterator>
 #include <memory>
+#include <set>
 #include <string>
 #include <vector>
-#include <set>
 
 namespace osrm
 {
