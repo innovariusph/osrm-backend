@@ -11,8 +11,8 @@
 #include "util/guidance/entry_class.hpp"
 #include "util/guidance/turn_bearing.hpp"
 #include "util/guidance/turn_lanes.hpp"
-#include "util/typedefs.hpp"
 #include "util/integer_range.hpp"
+#include "util/typedefs.hpp"
 
 #include <vector>
 
