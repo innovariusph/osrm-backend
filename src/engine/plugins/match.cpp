@@ -250,11 +250,12 @@ Status MatchPlugin::HandleRequest(const RoutingAlgorithmsInterface &algorithms,
     {
         std::set<std::size_t> tidied_waypoints(tidied.parameters.waypoints.begin(),
                                                tidied.parameters.waypoints.end());
-        std::for_each(sub_matchings.begin(), sub_matchings.end(), [&](const SubMatching &sm) {
+        for (const auto &sm : sub_matchings)
+        {
             std::for_each(sm.indices.begin(),
                           sm.indices.end(),
                           [&tidied_waypoints](const auto index) { tidied_waypoints.erase(index); });
-        });
+        }
         if (!tidied_waypoints.empty())
         {
             return Error(
